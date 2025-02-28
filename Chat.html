@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CuteChat</title>
+    <style>
+        :root {
+            --pink-light: #ffd6e0;
+            --pink: #ffb6c1;
+            --pink-dark: #ff8da1;
+            --purple: #e2b0ff;
+            --purple-light: #f0d4ff;
+            --yellow: #ffffd6;
+            --blue: #b0e0ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--pink-light);
+            background-image: 
+                radial-gradient(var(--purple-light) 15%, transparent 15%),
+                radial-gradient(var(--purple-light) 15%, transparent 15%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            border: 3px solid var(--pink);
+            position: relative;
+        }
+        
+        header {
+            background-color: var(--pink);
+            padding: 15px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        header .logo {
+            font-size: 28px;
+            margin-right: 10px;
+        }
+        
+        .online-users {
+            background-color: var(--yellow);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px dashed var(--pink);
+        }
+        
+        .user-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--purple);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            margin-right: 8px;
+            border: 2px solid white;
+        }
+        
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 70%;
+            clear: both;
+        }
+        
+        .message.received {
+            float: left;
+        }
+        
+        .message.sent {
+            float: right;
+        }
+        
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 15px;
+            position: relative;
+        }
+        
+        .message.received .message-content {
+            background-color: var(--blue);
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.sent .message-content {
+            background-color: var(--pink);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message-info {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #888;
+        }
+        
+        .message.received .message-info {
+            text-align: left;
+        }
+        
+        .message.sent .message-info {
+            text-align: right;
+        }
+        
+        .input-area {
+            padding: 15px;
+            background-color: white;
+            border-top: 2px dashed var(--pink);
+            display: flex;
+            align-items: center;
+        }
+        
+        .emoji-btn {
+            background-color: var(--purple-light);
+            color: #555;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .emoji-btn:hover {
+            background-color: var(--purple);
+            color: white;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid var(--pink-light);
+            border-radius: 25px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
+        }
+        
+        .send-btn {
+            background-color: var(--pink);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            margin-left: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .send-btn:hover {
+            background-color: var(--pink-dark);
+            transform: scale(1.05);
+        }
+        
+        .status {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .emoji-panel {
+            display: none;
+            position: absolute;
+            bottom: 85px;
+            left: 15px;
+            background-color: white;
+            border: 2px solid var(--pink);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+        }
+        
+        .emoji {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            text-align: center;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        
+        .emoji:hover {
+            background-color: var(--pink-light);
+        }
+        
+        .chat-bubble {
+            position: absolute;
+            opacity: 0.4;
+            z-index: -1;
+        }
+        
+        .bubble-1 {
+            width: 80px;
+            height: 80px;
+            background-color: var(--purple-light);
+            border-radius: 50%;
+            top: 20%;
+            left: 10%;
+        }
+        
+        .bubble-2 {
+            width: 60px;
+            height: 60px;
+            background-color: var(--pink-light);
+            border-radius: 50%;
+            top: 60%;
+            right: 15%;
+        }
+        
+        .bubble-3 {
+            width: 40px;
+            height: 40px;
+            background-color: var(--blue);
+            border-radius: 50%;
+            bottom: 15%;
+            left: 20%;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                height: 95vh;
+                width: 95%;
+                border-radius: 15px;
+            }
+            
+            header h1 {
+                font-size: 20px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+        
+        /* Clear fix for float */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span>Online</span>
+            </div>
+            <span class="logo">🐱</span>
+            <h1>CuteChat</h1>
+        </header>
+        
+        <div class="online-users">
+            <div class="user-circle">J</div>
+            <div class="user-circle">K</div>
+            <div class="user-circle">M</div>
+            <div class="user-circle">+5</div>
+        </div>
+        
+        <div class="chat-area" id="chatArea">
+            <div class="message received clearfix">
+                <div class="message-content">Hello! Welcome to CuteChat! 👋</div>
+                <div class="message-info">Kitty • 10:30 AM</div>
+            </div>
+            
+            <div class="message sent clearfix">
+                <div class="message-content">Hi there! This is such a cute chat app! 😻</div>
+                <div class="message-info">You • 10:31 AM</div>
+            </div>
+            
+            <div class="message received clearfix">
+                <div class="message-content">Thanks! Feel free to chat with everyone here! We're all friendly meow~</div>
+                <div class="message-info">Kitty • 10:32 AM</div>
+            </div>
+        </div>
+        
+        <div class="emoji-panel" id="emojiPanel">
+            <div class="emoji-grid">
+                <div class="emoji">😊</div>
+                <div class="emoji">😂</div>
+                <div class="emoji">❤️</div>
+                <div class="emoji">👍</div>
+                <div class="emoji">🌸</div>
+                <div class="emoji">✨</div>
+                <div class="emoji">🐱</div>
+                <div class="emoji">🐶</div>
+                <div class="emoji">🍰</div>
+                <div class="emoji">🎀</div>
+                <div class="emoji">🌈</div>
+                <div class="emoji">🎵</div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <button class="emoji-btn" id="emojiBtn">😊</button>
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+        
+        <!-- Decorative bubbles -->
+        <div class="chat-bubble bubble-1"></div>
+        <div class="chat-bubble bubble-2"></div>
+        <div class="chat-bubble bubble-3"></div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const chatArea = document.getElementById('chatArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const emojiPanel = document.getElementById('emojiPanel');
+        const emojis = document.querySelectorAll('.emoji');
+        
+        // Show/hide emoji panel
+        emojiBtn.addEventListener('click', () => {
+            emojiPanel.style.display = emojiPanel.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        // Close emoji panel when clicking elsewhere
+        document.addEventListener('click', (e) => {
+            if (!emojiBtn.contains(e.target) && !emojiPanel.contains(e.target)) {
+                emojiPanel.style.display = 'none';
+            }
+        });
+        
+        // Add emoji to message input
+        emojis.forEach(emoji => {
+            emoji.addEventListener('click', () => {
+                messageInput.value += emoji.textContent;
+                messageInput.focus();
+            });
+        });
+        
+        // Send message function
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                // Create message elements
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message sent clearfix';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = message;
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'message-info';
+                infoDiv.textContent = `You • ${timeString}`;
+                
+                // Append elements
+                messageDiv.appendChild(contentDiv);
+                messageDiv.appendChild(infoDiv);
+                chatArea.appendChild(messageDiv);
+                
+                // Clear input and scroll to bottom
+                messageInput.value = '';
+                chatArea.scrollTop = chatArea.scrollHeight;
+                
+                // Simulate a response (for demo purposes)
+                setTimeout(() => {
+                    simulateResponse();
+                }, 1000 + Math.random() * 2000);
+            }
+        }
+        
+        // Send message on button click
+        sendBtn.addEventListener('click', sendMessage);
+        
+        // Send message on Enter key
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Simulate response (for demo purposes)
+        function simulateResponse() {
+            const responses = [
+                "That's so cute! 💕",
+                "I love chatting with you! 😊",
+                "Have you seen the new stickers? 🌟",
+                "Meow meow! 🐱",
+                "Would you like to join our cute event tomorrow? 🎀",
+                "Hehe, that's interesting! Tell me more! ✨"
+            ];
+            
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes} ${hours >= 12 ? 'PM' : 'AM'}`;
+            
+            const names = ["Kitty", "Bunny", "Fluffy", "Sparkle"];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message received clearfix';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = randomResponse;
+            
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'message-info';
+            infoDiv.textContent = `${randomName} • ${timeString}`;
+            
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(infoDiv);
+            chatArea.appendChild(messageDiv);
+            
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+</body>
+</html>
