@@ -291,7 +291,6 @@
             left: 20%;
         }
         
-        /* Mobile responsiveness */
         @media (max-width: 600px) {
             .container {
                 height: 95vh;
@@ -308,7 +307,6 @@
             }
         }
         
-        /* Clear fix for float */
         .clearfix::after {
             content: "";
             clear: both;
@@ -374,14 +372,12 @@
             <button class="send-btn" id="sendBtn">➤</button>
         </div>
         
-        <!-- Decorative bubbles -->
         <div class="chat-bubble bubble-1"></div>
         <div class="chat-bubble bubble-2"></div>
         <div class="chat-bubble bubble-3"></div>
     </div>
 
     <script>
-        // DOM Elements
         const chatArea = document.getElementById('chatArea');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -389,19 +385,16 @@
         const emojiPanel = document.getElementById('emojiPanel');
         const emojis = document.querySelectorAll('.emoji');
         
-        // Show/hide emoji panel
         emojiBtn.addEventListener('click', () => {
             emojiPanel.style.display = emojiPanel.style.display === 'block' ? 'none' : 'block';
         });
         
-        // Close emoji panel when clicking elsewhere
         document.addEventListener('click', (e) => {
             if (!emojiBtn.contains(e.target) && !emojiPanel.contains(e.target)) {
                 emojiPanel.style.display = 'none';
             }
         });
         
-        // Add emoji to message input
         emojis.forEach(emoji => {
             emoji.addEventListener('click', () => {
                 messageInput.value += emoji.textContent;
@@ -409,11 +402,9 @@
             });
         });
         
-        // Send message function
         function sendMessage() {
             const message = messageInput.value.trim();
             if (message) {
-                // Create message elements
                 const now = new Date();
                 const hours = now.getHours();
                 const minutes = now.getMinutes();
@@ -430,33 +421,27 @@
                 infoDiv.className = 'message-info';
                 infoDiv.textContent = `You • ${timeString}`;
                 
-                // Append elements
                 messageDiv.appendChild(contentDiv);
                 messageDiv.appendChild(infoDiv);
                 chatArea.appendChild(messageDiv);
                 
-                // Clear input and scroll to bottom
                 messageInput.value = '';
                 chatArea.scrollTop = chatArea.scrollHeight;
                 
-                // Simulate a response (for demo purposes)
                 setTimeout(() => {
                     simulateResponse();
                 }, 1000 + Math.random() * 2000);
             }
         }
         
-        // Send message on button click
         sendBtn.addEventListener('click', sendMessage);
         
-        // Send message on Enter key
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
         
-        // Simulate response (for demo purposes)
         function simulateResponse() {
             const responses = [
                 "That's so cute! 💕",
